@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartGov AI – Citizen Feedback</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(120deg, #f0f2f5, #d9e4f5);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            background: #fff;
+            max-width: 600px;
+            margin: 80px auto;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #2c3e50;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            margin: 10px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #2980b9;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #3498db;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2c80b4;
+        }
+
+        #response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #e9f7ef;
+            color: #2c662d;
+            border: 1px solid #b9e7c9;
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>SmartGov AI – Submit Your Feedback</h2>
+        <form id="feedbackForm">
+            <input type="text" id="name" placeholder="Your Name" required />
+            <input type="email" id="email" placeholder="Your Email" required />
+            <textarea id="feedback_text" placeholder="Describe the issue in your area..." rows="5" required></textarea>
+            <button type="submit">Submit Feedback</button>
+        </form>
+        <div id="response"></div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 SmartGov AI · Enhancing Citizen Participation
+    </div>
+
+    <script>
+        const form = document.getElementById("feedbackForm");
+        const responseBox = document.getElementById("response");
+
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const feedback_text = document.getElementById("feedback_text").value;
+
+            const res = await fetch("http://localhost:5000/submit_feedback", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name, email, feedback_text })
+            });
+
+            const data = await res.json();
+
+            responseBox.innerText = `✓ Feedback submitted successfully.\n\nSentiment: ${data.sentiment}\nCategory: ${data.category}\nUrgency: ${data.urgency}`;
+            responseBox.style.display = "block";
+        });
+    </script>
+
+</body>
+</html>
